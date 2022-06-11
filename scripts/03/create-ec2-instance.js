@@ -85,7 +85,7 @@ async function createInstance(sgName, keyName) {
     MinCount: 1,
     SecurityGroups: [sgName],
     UserData:
-      'IyEvYmluL2Jhc2gKY3VybCAtLXNpbGVudCAtLWxvY2F0aW9uIGh0dHBzOi8vcnBtLm5vZGVzb3VyY2UuY29tL3NldHVwXzE2LnggfCBzdWRvIGJhc2ggLQpzdWRvIHl1bSBpbnN0YWxsIC15IG5vZGVqcwpzdWRvIHl1bSBpbnN0YWxsIC15IGdpdApjZCBob21lL2VjMi11c2VyCmdpdCBjbG9uZSBodHRwczovL2dpdGh1Yi5jb20vaW5hbmZhdGloL2F3cy5naXQgaGJmbApjZCBhd3MKbnBtIGkKbnBtIHJ1biBzdGFydA==',
+      'IyEvYmluL2Jhc2gKY3VybCAtLXNpbGVudCAtLWxvY2F0aW9uIGh0dHBzOi8vcnBtLm5vZGVzb3VyY2UuY29tL3NldHVwXzE2LnggfCBzdWRvIGJhc2ggLQpzdWRvIHl1bSBpbnN0YWxsIC15IG5vZGVqcwpzdWRvIHl1bSBpbnN0YWxsIC15IGdpdApjZCBob21lL2VjMi11c2VyCmdpdCBjbG9uZSBodHRwczovL2dpdGh1Yi5jb20vaW5hbmZhdGloL2F3cy5naXQgaGJmbApjZCBoYmZsCm5wbSBpCm5wbSBydW4gc3RhcnQK',
   }
   // UserData'nin base64 encoded olmasi gerekiyor
   const command = new RunInstancesCommand(params)
