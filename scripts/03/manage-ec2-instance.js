@@ -1,16 +1,19 @@
 // Imports
-// TODO: Import the ec2 client
 
-function sendCommand (command) {
+const { EC2Client, DescribeInstancesCommand } = require('@aws-sdk/client-ec2')
+
+function sendCommand(command) {
   const client = new EC2Client({ region: process.env.AWS_REGION })
   return client.send(command)
 }
 
-async function listInstances () {
+async function listInstances() {
   // TODO: List instances using DescribeInstancesCommand
+  const command = new DescribeInstancesCommand({})
+  return sendCommand(command)
 }
 
-async function terminateInstance (instanceId) {
+async function terminateInstance(instanceId) {
   // TODO: Terminate an instance with a given instanceId
 }
 
