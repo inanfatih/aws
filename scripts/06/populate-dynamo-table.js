@@ -1,14 +1,13 @@
 // Imports
-const {
-  BatchWriteCommand
-} = require('@aws-sdk/lib-dynamodb')
+const { BatchWriteCommand } = require('@aws-sdk/lib-dynamodb')
 const {
   getHamsterData,
   getRaceData,
-  sendDynamoItemCommand
+  sendDynamoItemCommand,
+  sendDynamoDBCommand,
 } = require('./helpers')
 
-async function execute () {
+async function execute() {
   try {
     const hamstersData = await getHamsterData()
     await populateTable('hamsters', hamstersData)
@@ -22,8 +21,20 @@ async function execute () {
   }
 }
 
-async function populateTable (tableName, data) {
-  // TODO: Upload to table with batch write
+async function populateTable(tableName, data) {
+  const params = {
+    RequestItems: {
+      [tableName]: data.map((i) => {
+        return {
+          PutRequest: {
+            Item: i,
+          },
+        }
+      }),
+    },
+  }
+  const command = new BatchWriteCommand(params)
+  return sendDynamoItemCommand(command)
 }
 
 execute()

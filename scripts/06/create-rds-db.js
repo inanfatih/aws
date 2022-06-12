@@ -1,15 +1,10 @@
 // Imports
-const {
-  CreateDBInstanceCommand
-} = require('@aws-sdk/client-rds')
-const {
-  createSecurityGroup,
-  sendRDSCommand
-} = require('./helpers')
+const { CreateDBInstanceCommand } = require('@aws-sdk/client-rds')
+const { createSecurityGroup, sendRDSCommand } = require('./helpers')
 
 const dbName = 'user'
 
-async function execute () {
+async function execute() {
   try {
     const groupName = `${dbName}-db-sg`
     const sgId = await createSecurityGroup(groupName, 3306)
@@ -20,8 +15,19 @@ async function execute () {
   }
 }
 
-async function createDatabase (dbName, sgId) {
-  // TODO: Create the db instance
+async function createDatabase(dbName, sgId) {
+  const params = {
+    AllocatedStorage: 5,
+    DBInstanceClass: 'db.t2.micro',
+    DBInstanceIdentifier: dbName,
+    Engine: 'mysql',
+    DBName: dbName,
+    VpcSecurityGroupIds: [sgId],
+    MasterUsername: 'admin',
+    MasterUserPassword: 'mypassword',
+  }
+  const command = new CreateDBInstanceCommand(params)
+  return sendRDSCommand(command)
 }
 
 execute()

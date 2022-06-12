@@ -9,17 +9,18 @@ const { init: queueInit } = require('./lib/data/lib/sqs.listener')
 
 const options = {
   port: 3000,
-  // // Commented out until Elasticache is configured
-  // cache: [{
-  //   name: 'redis',
-  //   provider: {
-  //     constructor: require('@hapi/catbox-redis'),
-  //     options: {
-  //       partition: 'cache',
-  //       host: 'your elasticache domain here',
-  //     }
-  //   }
-  // }]
+  cache: [
+    {
+      name: 'redis',
+      provider: {
+        constructor: require('@hapi/catbox-redis'),
+        options: {
+          partition: 'cache',
+          host: 'hamster.dc0jz8.0001.use1.cache.amazonaws.com',
+        },
+      },
+    },
+  ],
 }
 
 const init = async () => {
@@ -29,9 +30,9 @@ const init = async () => {
 
   // hapi-auth-cookie stuff
   const cache = server.cache({
-    // cache: 'redis',
+    cache: 'redis',
     segment: 'sessions',
-    expiresIn: 3 * 24 * 60 * 60 * 1000
+    expiresIn: 3 * 24 * 60 * 60 * 1000,
   })
   server.app.cache = cache
 
@@ -44,7 +45,7 @@ const init = async () => {
     cookie: {
       isSecure: false,
       name: 'hbfl-sid',
-      password: 'password-should-be-32-characters'
+      password: 'password-should-be-32-characters',
     },
     validateFunc: async (request, session) => {
       const cached = await cache.get(session.sid)
@@ -53,9 +54,9 @@ const init = async () => {
       }
       return {
         credentials: cached.account,
-        valid: true
+        valid: true,
       }
-    }
+    },
   })
 
   server.auth.default('session')
@@ -66,7 +67,7 @@ const init = async () => {
   // logging
   server.events.on('log', (_, event) => {
     if (event.error) {
-      logger.error(`Server error: ${event.error.message || 'unknown'}`);
+      logger.error(`Server error: ${event.error.message || 'unknown'}`)
     } else {
       logger.info(`Server event: ${event}`)
     }
@@ -75,7 +76,9 @@ const init = async () => {
   server.events.on('request', (_, event) => {
     if (event.tags.includes('unauthenticated')) return
     if (event.tags.includes('error')) {
-      logger.error(`Request error: ${event.data || event.error.message || 'unknown'}`);
+      logger.error(
+        `Request error: ${event.data || event.error.message || 'unknown'}`,
+      )
     } else {
       logger.info(`Request event: ${event}`)
     }
@@ -83,17 +86,17 @@ const init = async () => {
 
   // initialize database and start server
   usersInit()
-  // Commented out until SQS is configured
-  // .then(() => queueInit())
-  .then(async () => {
-    try {
-      await server.start()
-      console.log(`Server started at http://localhost:${server.info.port}`)
-    } catch (err) {
-      console.error(`Server could not start. Error: ${err}`)
-      logger.error(`Server could not start. Error: ${err}`)
-    }
-  })
+    // Commented out until SQS is configured
+    // .then(() => queueInit())
+    .then(async () => {
+      try {
+        await server.start()
+        console.log(`Server started at http://localhost:${server.info.port}`)
+      } catch (err) {
+        console.error(`Server could not start. Error: ${err}`)
+        logger.error(`Server could not start. Error: ${err}`)
+      }
+    })
 }
 
 init()
