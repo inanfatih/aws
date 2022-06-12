@@ -1,16 +1,16 @@
 // Imports
 const {
   RunInstancesCommand,
-  StopInstancesCommand
+  StopInstancesCommand,
 } = require('@aws-sdk/client-ec2')
 const { sendCommand } = require('./helpers')
 
 // Declare local variables
 const sgName = 'hamster_sg'
 const keyName = 'hamster_key'
-const instanceId = '/* TODO: Add the instance Id to stop */'
+const instanceId = 'i-00bf524bd7daff803'
 
-async function execute () {
+async function execute() {
   try {
     await stopInstance(instanceId)
     const data = await createInstance(sgName, keyName)
@@ -20,25 +20,25 @@ async function execute () {
   }
 }
 
-async function createInstance (sgName, keyName) {
+async function createInstance(sgName, keyName) {
   const params = {
-    ImageId: '/* TODO: Add ami id for amazon linux 2 */',
+    ImageId: 'ami-0022f774911c1d690',
     InstanceType: 't2.micro',
     KeyName: keyName,
     MaxCount: 1,
     MinCount: 1,
     Placement: {
-      AvailabilityZone: '/* TODO: Add the az from the instance that is stopping */'
+      AvailabilityZone: 'us-east-1a',
     },
-    SecurityGroups: [ sgName ]
+    SecurityGroups: [sgName],
   }
   const command = new RunInstancesCommand(params)
   return sendCommand(command)
 }
 
-function stopInstance (instanceId) {
+function stopInstance(instanceId) {
   const params = {
-    InstanceIds: [ instanceId ]
+    InstanceIds: [instanceId],
   }
   const command = new StopInstancesCommand(params)
   return sendCommand(command)

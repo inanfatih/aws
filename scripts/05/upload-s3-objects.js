@@ -1,13 +1,11 @@
 // Imports
-const {
-  PutObjectCommand
-} = require('@aws-sdk/client-s3')
+const { PutObjectCommand } = require('@aws-sdk/client-s3')
 const helpers = require('./helpers')
 
 // Declare local variables
-const bucketName = '/* TODO: Bucket you created */'
+const bucketName = 'fatihs-hamster-bucket'
 
-async function execute () {
+async function execute() {
   try {
     const files = await helpers.getPublicFiles()
 
@@ -22,8 +20,16 @@ async function execute () {
   }
 }
 
-async function uploadS3Object (bucketName, file) {
-  // TODO: Put object in S3
+async function uploadS3Object(bucketName, file) {
+  const params = {
+    Bucket: bucketName,
+    ACL: 'public-read',
+    Body: file.contents,
+    Key: file.name,
+    ContentType: helpers.getContentType(file.name),
+  }
+  const command = new PutObjectCommand(params)
+  return helpers.sendS3Command(command)
 }
 
 execute()

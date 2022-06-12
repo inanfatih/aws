@@ -1,15 +1,15 @@
 // Imports
 const {
   AttachVolumeCommand,
-  DetachVolumeCommand
+  DetachVolumeCommand,
 } = require('@aws-sdk/client-ec2')
 const { sendCommand, sleep } = require('./helpers')
 
 // Declare local variables
-const volumeId = '/* TODO: Add the volume to detach/attach */'
-const instanceId = '/* TODO: Add the instance to attach to */'
+const volumeId = 'vol-022bbd7b6b7a5a57a'
+const instanceId = 'i-0b952a09cf22b23f6'
 
-async function execute () {
+async function execute() {
   try {
     await detachVolume(volumeId)
     console.log('Detached volume:', volumeId)
@@ -21,12 +21,22 @@ async function execute () {
   }
 }
 
-async function detachVolume (volumeId) {
-  // TODO: Detach the volume
+async function detachVolume(volumeId) {
+  const params = {
+    volumeId: volumeId,
+  }
+  const command = new DetachVolumeCommand(params)
+  return sendCommand(command)
 }
 
-async function attachVolume (instanceId, volumeId) {
-  // TODO: Attach the volume
+async function attachVolume(instanceId, volumeId) {
+  const params = {
+    InstanceId: instanceId,
+    VolumeId: volumeId,
+    Device: '/dev/sdf',
+  }
+  const command = new AttachVolumeCommand(params)
+  return sendCommand(command)
 }
 
 execute()

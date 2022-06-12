@@ -1,13 +1,11 @@
 // Imports
-const {
-  CreateBucketCommand
-} = require('@aws-sdk/client-s3')
+const { CreateBucketCommand } = require('@aws-sdk/client-s3')
 const { sendS3Command } = require('./helpers')
 
 // Declare local variables
-const bucketName = 'hamster-bucket/* TODO: Add a unique identifier */'
+const bucketName = 'fatihs-hamster-bucket'
 
-async function execute () {
+async function execute() {
   try {
     const response = await createBucket(bucketName)
     console.log('Created S3 Bucket with:', response)
@@ -16,8 +14,13 @@ async function execute () {
   }
 }
 
-async function createBucket (bucketName) {
-  // TODO: Create s3 bucket
+async function createBucket(bucketName) {
+  const params = {
+    Bucket: bucketName,
+    ACL: 'public-read'
+  }
+  const command = new CreateBucketCommand(params)
+  return sendS3Command(command)
 }
 
 execute()
