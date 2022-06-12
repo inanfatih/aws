@@ -1,7 +1,8 @@
 // Imports
 const {
   CreateListenerCommand,
-  CreateTargetGroupCommand
+  CreateLoadBalancerCommand,
+  CreateTargetGroupCommand,
 } = require('@aws-sdk/client-elastic-load-balancing-v2')
 
 const helpers = require('./helpers')
@@ -10,12 +11,10 @@ const helpers = require('./helpers')
 const sgName = 'hamsterLBSG'
 const tgName = 'hamsterTG'
 const lbName = 'hamsterLB'
-const vpcId = '/* TODO: Add your VPC Id */'
-const subnets = [
-  /* TODO: Add two subnets */
-]
+const vpcId = 'vpc-0c0a6e2467a54a0f4'
+const subnets = ['subnet-075dcc15cdeb8abe2', 'subnet-0a271c417aec61549']
 
-async function execute () {
+async function execute() {
   try {
     const sgId = await helpers.createSecurityGroup(sgName, 80)
     const tgResult = await createTargetGroup(tgName)
@@ -32,33 +31,40 @@ async function execute () {
   }
 }
 
-function createLoadBalancer (lbName, sgId) {
-  // TODO: Create a load balancer
+function createLoadBalancer(lbName, sgId) {
+  const params = {
+    Name: lbName,
+    SecurityGroups: [sgId],
+    Subnets: subnets,
+    Type: 'application',
+  }
+  const command = new CreateLoadBalancerCommand(params)
+  return helpers.sendELBCommand(command)
 }
 
-function createTargetGroup (tgName) {
+function createTargetGroup(tgName) {
   const params = {
     Name: tgName,
     Port: 3000,
     Protocol: 'HTTP',
-    VpcId: vpcId
+    VpcId: vpcId,
   }
 
   const command = new CreateTargetGroupCommand(params)
   return helpers.sendELBCommand(command)
 }
 
-function createListener (tgArn, lbArn) {
+function createListener(tgArn, lbArn) {
   const params = {
     DefaultActions: [
       {
         TargetGroupArn: tgArn,
-        Type: 'forward'
-      }
+        Type: 'forward',
+      },
     ],
     LoadBalancerArn: lbArn,
     Port: 80,
-    Protocol: 'HTTP'
+    Protocol: 'HTTP',
   }
 
   const command = new CreateListenerCommand(params)

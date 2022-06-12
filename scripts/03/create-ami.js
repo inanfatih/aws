@@ -5,7 +5,7 @@ function sendCommand(command) {
   return client.send(command)
 }
 
-createImage('i-075c5ecc430d8a3eb', 'hamsterImage').then(() =>
+createImage('i-038766d2f092daba8', 'hamsterImage').then(() =>
   console.log('Complete'),
 )
 

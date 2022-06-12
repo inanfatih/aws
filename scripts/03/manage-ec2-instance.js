@@ -27,5 +27,5 @@ async function terminateInstance(instanceId) {
   return sendCommand(command)
 }
 
-listInstances().then(console.log)
-//terminateInstance('i-0370ef0720208b261').then(console.log)
+//listInstances().then(console.log)
+terminateInstance('i-05b2d5e031c784da6').then(console.log)
