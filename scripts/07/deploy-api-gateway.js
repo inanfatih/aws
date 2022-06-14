@@ -1,14 +1,12 @@
 // Imports
-const {
-  CreateDeploymentCommand
-} = require('@aws-sdk/client-api-gateway')
+const { CreateDeploymentCommand } = require('@aws-sdk/client-api-gateway')
 const { sendAPIGatewayCommand: sendCommand } = require('./helpers')
 
 // Declare local variables
 const stage = 'prod'
-const apiId = '/* TODO: Add api id */'
+const apiId = '/* Add api id from API Gateway */'
 
-async function execute () {
+async function execute() {
   try {
     const response = await createDeployment(apiId, stage)
     console.log(response)
@@ -17,8 +15,13 @@ async function execute () {
   }
 }
 
-function createDeployment (apiId, stageName) {
-  // TODO: Create deployment
+function createDeployment(apiId, stageName) {
+  const params = {
+    restApiId: apiId,
+    stageName: stageName,
+  }
+  const command = new CreateDeploymentCommand(params)
+  return sendCommand(command)
 }
 
 execute()
